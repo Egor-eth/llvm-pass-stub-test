@@ -1,10 +1,10 @@
 # Required packages:
 # Ubuntu 20.04: clang-12
-CC=clang-12
-CXX=clang++-12
-OPT=opt-12
-LLVM_CONFIG=llvm-config-12
-LLC=llc-12
+CC=clang
+CXX=clang++
+OPT=opt
+LLVM_CONFIG=llvm-config
+LLC=llc
 
 CFLAGS=-O2 -Werror -Wall -pedantic -fno-inline-functions -fPIC
 LDLIBS=-lm
