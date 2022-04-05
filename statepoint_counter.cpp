@@ -12,9 +12,9 @@
 using namespace llvm;
 
 namespace {
-struct FNamePrinter : public FunctionPass {
+struct StatePointCounter : public FunctionPass {
   static char ID;
-  FNamePrinter() : FunctionPass(ID) {}
+  StatePointCounter() : FunctionPass(ID) {}
 
   bool runOnFunction(Function &F) override {
     int maxOp = 0;
@@ -35,18 +35,18 @@ struct FNamePrinter : public FunctionPass {
         }
       }
     }
-    errs() << "Maximum number of statepoint's operands is " << maxOp << "\n";
+    errs() << "[Statepoint's count] " << F.getName() << ": Maximum number of statepoint's operands is " << maxOp << "\n";
     return false;
   }
-}; // end of struct FNamePrinter
+}; // end of struct StatePointCounter
 }  // end of anonymous namespace
 
-char FNamePrinter::ID = 0;
-static RegisterPass<FNamePrinter> X("fname_printer", "FNamePrinter Pass",
+char StatePointCounter::ID = 0;
+static RegisterPass<StatePointCounter> X("statepoint_counter", "Statepoint's Pass",
                                    false /* Only looks at CFG */,
-                                   true /* Analysis Pass */);
+                                   false /* Analysis Pass */);
 
 static RegisterStandardPasses Y(
     PassManagerBuilder::EP_EarlyAsPossible,
     [](const PassManagerBuilder &Builder,
-       legacy::PassManagerBase &PM) { PM.add(new FNamePrinter()); });
+       legacy::PassManagerBase &PM) { PM.add(new StatePointCounter()); });
