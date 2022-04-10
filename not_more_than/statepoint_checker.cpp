@@ -5,7 +5,7 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/InlineAsm.h"
 #include "llvm/Support/raw_ostream.h"
-
+#include "llvm/IR/Statepoint.h"
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 
@@ -23,22 +23,18 @@ struct StatePointChecker : public FunctionPass {
 
     for(const BasicBlock &blk : F) {
       for(const Instruction &ins : blk) {
-        if(ins.getOpcode() == Instruction::Call) {
-          const CallInst *callInst = cast<CallInst>(&ins);
-          if(callInst->getCalledFunction()->isIntrinsic()) {
-            auto optionalOpBundle = callInst->getOperandBundle("gc-live");
-            if(optionalOpBundle.hasValue()) {
-              const size_t ptrOps = std::count_if(optionalOpBundle->Inputs.begin(),
-                optionalOpBundle->Inputs.end(), [](const Use &use) {
-                return use->getType()->isPointerTy();
-              });
-              if(ptrOps > MAX_NUM) {
-                errs() 
-                  << "[Statepoint's checker] "
-                  << "Warning: maximum number of statepoint's operands is more than " 
-                  << MAX_NUM << ": " << ins << "\n";
-              }
-            }
+        const GCStatepointInst *statepointInst = dyn_cast<GCStatepointInst>(&ins);
+        if(statepointInst) {
+          const size_t ptrOps = std::count_if(statepointInst->gc_args_begin(),
+            statepointInst->gc_args_end(), 
+            [](const Use &use) {
+              return use->getType()->isPointerTy();
+            });
+          if(ptrOps > MAX_NUM) {
+            errs() 
+              << "[Statepoint's checker] "
+              << "Warning: maximum number of statepoint's operands is more than " 
+              << MAX_NUM << ": " << ins << "\n";
           }
         }
       }

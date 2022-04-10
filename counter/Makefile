@@ -21,6 +21,9 @@ $(BENCH): $(BENCH).c $(PASS_NAME).so
 	$(LLC) -O2 --relocation-model=pic -o $(BENCH).s $(BENCH).ll
 	$(CC) $(LDLIBS) $(BENCH).s -o $@
 
+test: tests/test.ll $(PASS_NAME).so
+	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -S -$(PASS_NAME) < tests/test.ll > /dev/null
+
 .PHONY: clean
 clean:
 	rm -f $(BENCH) \
