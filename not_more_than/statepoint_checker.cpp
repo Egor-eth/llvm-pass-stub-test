@@ -4,22 +4,27 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/InlineAsm.h"
-#include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/Statepoint.h"
 #include "llvm/IR/LegacyPassManager.h"
+#include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/CommandLine.h"
 #include "llvm/Transforms/IPO/PassManagerBuilder.h"
 
 using namespace llvm;
 
 namespace {
 
-enum {MAX_NUM = 2};
+enum {DEFAULT_MAX = 2};
+
+cl::opt<unsigned> MaxGCLiveArgs("m", cl::desc("Specify maximum arguments for check"), cl::value_desc("count"), cl::init(DEFAULT_MAX));
 
 struct StatePointChecker : public FunctionPass {
   static char ID;
   StatePointChecker() : FunctionPass(ID) {}
 
   bool runOnFunction(Function &F) override {
+
+    const unsigned maxNum = MaxGCLiveArgs.getValue();
 
     for(const BasicBlock &blk : F) {
       for(const Instruction &ins : blk) {
@@ -30,11 +35,11 @@ struct StatePointChecker : public FunctionPass {
             [](const Use &use) {
               return use->getType()->isPointerTy();
             });
-          if(ptrOps > MAX_NUM) {
+          if(ptrOps > maxNum) {
             errs() 
               << "[Statepoint's checker] "
               << "Warning: maximum number of statepoint's operands is more than " 
-              << MAX_NUM << ": " << ins << "\n";
+              << maxNum << ": " << ins << "\n";
           }
         }
       }
