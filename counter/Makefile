@@ -6,6 +6,7 @@ OPT=opt
 LLVM_CONFIG=llvm-config
 LLC=llc
 
+
 CFLAGS=-O2 -Werror -Wall -pedantic -fno-inline-functions -fPIC
 LDLIBS=-lm
 
@@ -14,8 +15,14 @@ PASS_NAME=statepoint_counter
 $(PASS_NAME).so: $(PASS_NAME).cpp
 	$(CXX) $(CFLAGS) `$(LLVM_CONFIG) --cxxflags` -shared -fPIC -o $@ $<
 
-test: tests/test.ll $(PASS_NAME).so
-	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -S -$(PASS_NAME) < tests/test.ll > /dev/null
+test: tests/test1.ll tests/test2.ll $(PASS_NAME).so
+	echo "TEST 1"
+	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -S -$(PASS_NAME) < tests/test1.ll > /dev/null
+	echo "TEST 2"
+	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -S -$(PASS_NAME) < tests/test2.ll > /dev/null
+	echo "TEST 3"
+	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -S -$(PASS_NAME) < tests/test3.ll > /dev/null
+
 
 .PHONY: clean
 clean:

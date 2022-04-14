@@ -24,22 +24,22 @@ struct StatePointChecker : public FunctionPass {
 
   bool runOnFunction(Function &F) override {
 
-    const unsigned maxNum = MaxGCLiveArgs.getValue();
+    const unsigned MaxNum = MaxGCLiveArgs.getValue();
 
-    for(const BasicBlock &blk : F) {
-      for(const Instruction &ins : blk) {
-        const GCStatepointInst *statepointInst = dyn_cast<GCStatepointInst>(&ins);
-        if(statepointInst) {
-          const size_t ptrOps = std::count_if(statepointInst->gc_args_begin(),
-            statepointInst->gc_args_end(), 
-            [](const Use &use) {
-              return use->getType()->isPointerTy();
+    for(const BasicBlock &B : F) {
+      for(const Instruction &I : B) {
+        const GCStatepointInst *StatepointInst = dyn_cast<GCStatepointInst>(&I);
+        if(StatepointInst) {
+          const size_t PtrOps = std::count_if(StatepointInst->gc_args_begin(),
+            StatepointInst->gc_args_end(), 
+            [](const Use &U) {
+              return U->getType()->isPointerTy();
             });
-          if(ptrOps > maxNum) {
+          if(PtrOps > MaxNum) {
             errs() 
               << "[Statepoint's checker] "
               << "Warning: maximum number of statepoint's operands is more than " 
-              << maxNum << ": " << ins << "\n";
+              << MaxNum << ": " << I << "\n";
           }
         }
       }

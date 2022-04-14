@@ -5,7 +5,8 @@ CXX=clang++
 OPT=opt
 LLVM_CONFIG=llvm-config
 LLC=llc
-MAX_NUM=3
+TEST2_NUM=3
+TEST3_NUM=1
 
 
 CFLAGS=-O2 -Werror -Wall -pedantic -fno-inline-functions -fPIC
@@ -20,7 +21,9 @@ test: tests/test1.ll tests/test2.ll $(PASS_NAME).so
 	echo "TEST 1"
 	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -S -$(PASS_NAME) < tests/test1.ll > /dev/null
 	echo "TEST 2"
-	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -m $(MAX_NUM) -S -$(PASS_NAME) < tests/test2.ll > /dev/null
+	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -m $(TEST2_NUM) -S -$(PASS_NAME) < tests/test2.ll > /dev/null
+	echo "TEST 3"
+	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -m $(TEST3_NUM) -S -$(PASS_NAME) < tests/test3.ll > /dev/null
 
 
 .PHONY: clean
