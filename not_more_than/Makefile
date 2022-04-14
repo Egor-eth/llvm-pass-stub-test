@@ -25,7 +25,6 @@ test: tests/test1.ll tests/test2.ll $(PASS_NAME).so
 	echo "TEST 3"
 	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -m $(TEST3_NUM) -S -$(PASS_NAME) < tests/test3.ll > /dev/null
 
-
 .PHONY: clean
 clean:
 	rm -f $(BENCH) \
