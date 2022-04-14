@@ -1,12 +1,12 @@
 # Задание
 
 ## Statepoint counter
-<font color="#696969">(*counter/statepoint_counter.cpp*)</font>
+(*counter/statepoint_counter.cpp*)
 
 Выполняет подсчет максимального числа ссылок, переданных в *@llvm.experimental.gc.statepoint*. Для каждой функции переданного файла, будет выведено максимальное число ссылок, переданных в gc-live.
 
 ## Statepoint checker
-<font color="#696969">(*counter/statepoint_checker.cpp*)</font>
+(*counter/statepoint_checker.cpp*)
 
 В случае превышения необходимого количества ссылок, переданных в *@llvm.experimental.gc.statepoint*, выводит предупреждение и ошибочную строку. 
 
@@ -16,15 +16,15 @@ opt -enable-new-pm=0 -load statepoint_checker.so -m 3 -S statepoint_checker
 ```
 
 ## Тестирование и сборка
-Для сборки Pass используется команда:
+Для сборки Pass используется команда (в соответствующей директории):
 
 ```
-make
+$make
 ```
 
 Для тестирования:
 
 ```
-make test
+$make test
 ```
 
