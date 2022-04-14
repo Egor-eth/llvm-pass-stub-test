@@ -6,6 +6,8 @@ OPT=opt
 LLVM_CONFIG=llvm-config
 LLC=llc
 
+FILE=tests/test1.ll
+
 
 CFLAGS=-O2 -Werror -Wall -pedantic -fno-inline-functions -fPIC
 LDLIBS=-lm
@@ -14,6 +16,9 @@ PASS_NAME=statepoint_counter
 
 $(PASS_NAME).so: $(PASS_NAME).cpp
 	$(CXX) $(CFLAGS) `$(LLVM_CONFIG) --cxxflags` -shared -fPIC -o $@ $<
+
+run: $(PASS_NAME).so $(FILE)
+	$(OPT) -enable-new-pm=0 -load ./$(PASS_NAME).so -S -$(PASS_NAME) < $(FILE) > /dev/null
 
 test: tests/test1.ll tests/test2.ll $(PASS_NAME).so
 	echo "TEST 1"
