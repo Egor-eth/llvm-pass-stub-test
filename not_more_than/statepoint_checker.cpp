@@ -39,7 +39,7 @@ struct StatePointChecker : public FunctionPass {
             errs() 
               << "[Statepoint's checker] "
               << "Warning: maximum number of statepoint's operands is more than " 
-              << MaxNum << ": " << I << "\n";
+              << MaxNum << " in " << F.getName()<< ": " << I << "\n";
           }
         }
       }
