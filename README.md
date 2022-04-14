@@ -12,7 +12,7 @@
 
 *statepoint_checker.so* принимает в качестве необязательного параметра командной строки *-m* максимальное допустимое число ссылок. В случае пропуска параметра, используется значение по умолчанию, равное 2. Следующая команда выполнит этот Pass с макс. числом ссылок равным 3. 
 ```
-opt -enable-new-pm=0 -load statepoint_checker.so -m 3 -S statepoint_checker
+$opt -enable-new-pm=0 -load statepoint_checker.so -m 3 -S statepoint_checker
 ```
 
 ## Тестирование и сборка
